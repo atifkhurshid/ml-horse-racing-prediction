@@ -12,21 +12,26 @@ df = df.dropna(subset=['finishing_position'])
 
 df['finishing_position'] = df['finishing_position'].replace([' DH'], '', regex=True)
 
-# Add a column named recent_6_runs to the dataframe, which records the recent ranks of the horse in
-#each entry. The ranks are separated by “/”, and a record is like 1/2/6/3/4/7.
-id = []
-for item in df['horse_id']:
-    if item not in id:
-        id.append(item)
-print (len(id))
 
+df['recent_6_runs'] = 'nan'
+df['recent_ave_rank'] = 7
+id_list = []
+for id in df['horse_id']:
+    if id not in id_list:
+        id_list.append(id)
+for id in id_list:
+    breaker = '/'
+    recent = []
+    for index, record in df[df['horse_id'] == id].iterrows():
+        df.loc[index, 'recent_6_runs'] = breaker.join(recent)
+        if (len(recent)) != 0:
+            df.loc[index, 'recent_ave_rank'] = sum(map(float,recent))/float(len(recent))
+        recent.append(record.finishing_position)
+        if len(recent) > 6:
+            recent = recent[1:]
 
+print(df)
 
-
-#Add a column named recent_ave_rank for each entry to the dataframe, which records the average
-#rank of the recent 6 runs of a horse. If there are less than 6 past runs, take the average of all the past
-#runs. For example, the horse with past ranks 3,5,13 has a average rank (3+5+13)/3=7. If there are
-#no previous runs, set the recent_ave_rank to be a prior value 7.
 
 # Give a unique index to each horses, where “which horse has which index” is not restricted. Similarly, a
 #unique index should be assigned to each jockey, and a unique index should be assigned to each trainer.
