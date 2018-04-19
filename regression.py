@@ -5,11 +5,11 @@ import numpy as np
 from sklearn.svm import SVR
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, explained_variance_score, mean_absolute_error
+from sklearn.metrics import mean_squared_error, explained_variance_score, r2_score
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 from sklearn.externals import joblib
-
+from sklearn.model_selection import StratifiedShuffleSplit
 seaborn.set()
 
 
@@ -66,9 +66,7 @@ for t in finish_time:
     y_test.append(float(t_arr[0])*60 + float(t_arr[1] + '.' + t_arr[2] ))
 y_test = np.array(y_test)
 
-X_train = X_train[-1000:]
-y_train = y_train[-1000:]
-'''
+
 std_scalar = StandardScaler()
 std_scalar.fit(X_train)
 X_train_std = std_scalar.transform(X_train)
@@ -79,7 +77,6 @@ std_scalar_y.fit(np.reshape(y_train, (-1, 1)))
 y_train_std = std_scalar_y.transform(np.reshape(y_train, (-1, 1))).ravel()
 y_test_std = std_scalar_y.transform(np.reshape(y_test, (-1, 1))).ravel()
 
-'''
 #model = SVR(kernel='linear', C = 0.1, epsilon=1)         #1.62 without normal
 #model = SVR(kernel='linear', C = 10) #1.59 with full data - normalized
 #model = SVR(kernel='rbf', C = 5000, gamma= 0.0000001)     #1.561 with all data
@@ -91,71 +88,57 @@ y_test_std = std_scalar_y.transform(np.reshape(y_test, (-1, 1))).ravel()
 #Reason : Fastest to train, same performance as others
 
 #svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)        1.59 .227 .496 4.619
-#svr_model = SVR(kernel='linear', C=1, epsilon=10, gamma='auto')        #1.677 .150 .354 5.850 on default
-#svr_model.fit(X_train, y_train)
-#joblib.dump(svr_model, 'models/svr_model.pkl')
-#svr_pred = svr_model.predict(X_test)
-#svr_RMSE = math.sqrt(mean_squared_error(y_test, svr_pred))
-#svr_top1, svr_top3, svr_avg = Top_1_3_avg(df_test, svr_pred)
-#print ("model_name,         RMSE   Top_1   Top_3     Average_Rank")
-#print ("svr_model,         %.3f   %.3f    %.3f       %.3f" %(svr_RMSE, svr_top1, svr_top3, svr_avg))
 
 
-parameters = [{'kernel': ['rbf'],
-               'gamma': [2e-15, 2e-13, 2e-11, 2e-9, 2e-7, 2e-5, 2e-3, 2e-1, 2e1, 2e3],
-                'C': [2e-5, 2e-3, 2e-1, 2e1, 2e3, 2e5, 2e7, 2e9, 2e11, 2e13, 2e15]}]
+print ("model_name          RMSE   Top_1   Top_3     Average_Rank")
+svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)
+svr_model.fit(X_train, y_train)
+joblib.dump(svr_model, 'models/svr_model.pkl')
+svr_pred = svr_model.predict(X_test)
+svr_RMSE = math.sqrt(mean_squared_error(y_test, svr_pred))
+svr_top1, svr_top3, svr_avg = Top_1_3_avg(df_test, svr_pred)
+print ("svr_model,         %.3f   %.3f    %.3f       %.3f" %(svr_RMSE, svr_top1, svr_top3, svr_avg))
 
-print("# Tuning hyper-parameters")
-print()
-
-clf = GridSearchCV(SVR(), parameters, cv=5, scoring='r2')
-clf.fit(X_train, y_train)
-print("Best parameters set found on development set:")
-print()
-print(clf.best_params_)
-print()
-print("Grid scores on training set:")
-print()
-means = clf.cv_results_['mean_test_score']
-stds = clf.cv_results_['std_test_score']
-for mean, std, params in zip(means, stds, clf.cv_results_['params']):
-    print("%0.3f (+/-%0.03f) for %r"
-          % (mean, std * 2, params))
-print()
-
-
-'''
-s_svr_model = SVR(kernel='rbf', C = 1000000, epsilon=0.1, gamma= 0.000001)
+s_svr_model = SVR(kernel='rbf', C = 15000, epsilon=0.05, gamma= 0.000001)
 s_svr_model.fit(X_train_std, y_train_std)
 joblib.dump(s_svr_model, 'models/s_svr_model.pkl')
+s_svr_pred = s_svr_model.predict(X_test_std)
+s_svr_RMSE = math.sqrt(mean_squared_error(y_test_std, s_svr_pred))
+s_svr_top1, s_svr_top3, s_svr_avg = Top_1_3_avg(df_test, s_svr_pred)
+print ("Scaled svr_model,  %.3f   %.3f    %.3f       %.3f" %(s_svr_RMSE, s_svr_top1, s_svr_top3, s_svr_avg))
 
 gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=200, max_depth=8)
 gbrt_model.fit(X_train, y_train)
 joblib.dump(gbrt_model, 'models/gbrt_model.pkl')
+gbrt_pred = gbrt_model.predict(X_test)
+gbrt_RMSE = math.sqrt(mean_squared_error(y_test, gbrt_pred))
+gbrt_top1, gbrt_top3, gbrt_avg = Top_1_3_avg(df_test, gbrt_pred)
+
+print ("gbrt_model,        %.3f   %.3f    %.3f       %.3f" %(gbrt_RMSE, gbrt_top1, gbrt_top3, gbrt_avg))
 
 s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.1, n_estimators=100, max_depth=8)
 s_gbrt_model.fit(X_train_std, y_train_std)
 joblib.dump(s_gbrt_model, 'models/s_gbrt_model.pkl')
-
-
-svr_pred = svr_model.predict(X_test)
-gbrt_pred = gbrt_model.predict(X_test)
-s_svr_pred = s_svr_model.predict(X_test_std)
 s_gbrt_pred = s_gbrt_model.predict(X_test_std)
-
-svr_RMSE = math.sqrt(mean_squared_error(y_test, svr_pred))
-gbrt_RMSE = math.sqrt(mean_squared_error(y_test, gbrt_pred))
-s_svr_RMSE = math.sqrt(mean_squared_error(y_test_std, s_svr_pred))
 s_gbrt_RMSE = math.sqrt(mean_squared_error(y_test_std, s_gbrt_pred))
-
-svr_top1, svr_top3, svr_avg = Top_1_3_avg(df_test, svr_pred)
-gbrt_top1, gbrt_top3, gbrt_avg = Top_1_3_avg(df_test, gbrt_pred)
-s_svr_top1, s_svr_top3, s_svr_avg = Top_1_3_avg(df_test, s_svr_pred)
 s_gbrt_top1, s_gbrt_top3, s_gbrt_avg = Top_1_3_avg(df_test, s_gbrt_pred)
-
-print ("model_name,         RMSE   Top_1   Top_3     Average_Rank")
-print ("svr_model,         %.3f   %.3f    %.3f       %.3f" %(svr_RMSE, svr_top1, svr_top3, svr_avg))
-print ("Scaled svr_model,  %.3f   %.3f    %.3f       %.3f" %(s_svr_RMSE, s_svr_top1, s_svr_top3, s_svr_avg))
-print ("gbrt_model,        %.3f   %.3f    %.3f       %.3f" %(gbrt_RMSE, gbrt_top1, gbrt_top3, gbrt_avg))
 print ("Scaled gbrt_model, %.3f   %.3f    %.3f       %.3f" %(s_gbrt_RMSE, s_gbrt_top1, s_gbrt_top3, s_gbrt_avg))
-'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
