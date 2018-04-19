@@ -51,14 +51,18 @@ X_train = std_scalar.transform(X_train)
 
 parameters = [{'kernel': ['rbf'],
                'gamma': [1e-4, 1e-3, 0.01, 0.1, 0.2, 0.5],
-                'C': [1, 10, 30, 50, 70, 100 ]},
+               'C': [1, 10, 30, 50, 70, 100 ],
+               'verbose': True },
               {'kernel': ['linear'],
-                'C': [1, 10, 30, 50, 70, 100 ]},
+                'C': [1, 10, 30, 50, 70, 100 ],
+               'verbose': True},
               {'kernel': ['sigmoid'],
-                'C': [1, 10, 30, 50, 70, 100 ]},
+                'C': [1, 10, 30, 50, 70, 100 ],
+               'verbose': True},
               {'kernel': ['poly'],
                'C': [1, 10, 30, 50, 70, 100],
-                'degree': [2, 3, 4, 5, 6, 7, 8]}
+                'degree': [2, 3, 4, 5, 6, 7, 8],
+               'verbose': True}
               ]
 
 print("# Tuning hyper-parameters")
