@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, explained_variance_score, mean_absolute_error
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
+from sklearn.externals import joblib
 
 seaborn.set()
 
@@ -89,15 +90,20 @@ y_test_std = std_scalar_y.transform(np.reshape(y_test, (-1, 1))).ravel()
 
 svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)
 svr_model.fit(X_train, y_train)
+joblib.dump(svr_model, 'svr_model.pkl')
 
 s_svr_model = SVR(kernel='rbf', C = 1000000, epsilon=0.1, gamma= 0.000001)
 s_svr_model.fit(X_train_std, y_train_std)
+joblib.dump(s_svr_model, 's_svr_model.pkl')
 
 gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=200, max_depth=8)
 gbrt_model.fit(X_train, y_train)
+joblib.dump(gbrt_model, 'gbrt_model.pkl')
 
 s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.1, n_estimators=100, max_depth=8)
 s_gbrt_model.fit(X_train_std, y_train_std)
+joblib.dump(s_gbrt_model, 's_gbrt_model.pkl')
+
 
 svr_pred = svr_model.predict(X_test)
 gbrt_pred = gbrt_model.predict(X_test)
