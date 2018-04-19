@@ -65,9 +65,6 @@ for t in finish_time:
     y_test.append(float(t_arr[0])*60 + float(t_arr[1] + '.' + t_arr[2] ))
 y_test = np.array(y_test)
 
-X_train = X_train[-500:]
-y_train = y_train[-500:]
-
 
 std_scalar = StandardScaler()
 std_scalar.fit(X_train)
