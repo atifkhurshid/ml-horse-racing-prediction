@@ -48,28 +48,24 @@ X_train = std_scalar.transform(X_train)
 
 '''
 
-
+'''
 parameters = [{'kernel': ['rbf'],
                'gamma': [1e-4, 1e-3, 0.01, 0.1, 0.2, 0.5],
-               'C': [1, 10, 30, 50, 70, 100 ],
-               'verbose': True },
+               'C': [1, 10, 30, 50, 70, 100 ]},
               {'kernel': ['linear'],
-                'C': [1, 10, 30, 50, 70, 100 ],
-               'verbose': True},
+                'C': [1, 10, 30, 50, 70, 100 ]},
               {'kernel': ['sigmoid'],
-                'C': [1, 10, 30, 50, 70, 100 ],
-               'verbose': True},
+                'C': [1, 10, 30, 50, 70, 100 ]},
               {'kernel': ['poly'],
                'C': [1, 10, 30, 50, 70, 100],
-                'degree': [2, 3, 4, 5, 6, 7, 8],
-               'verbose': True}
+                'degree': [2, 3, 4, 5, 6, 7, 8]}
               ]
 
 print("# Tuning hyper-parameters")
 print()
 
 clf = GridSearchCV(SVR(), parameters, cv=5, scoring='explained_variance')
-clf.fit(X_train[0:500], y_train[0:500])
+clf.fit(X_train, y_train)
 
 print("Best parameters set found on development set:")
 print()
@@ -83,6 +79,29 @@ for mean, std, params in zip(means, stds, clf.cv_results_['params']):
     print("%0.3f (+/-%0.03f) for %r"
           % (mean, std * 2, params))
 print()
+'''
 
+parameters = [{'loss': ['ls', 'huber', 'lad', 'quantile'],
+               'learning_rate': [1e-3, 0.01, 0.1, 0.2, 0.5],
+               'n_estimators': [20, 50, 100, 200],
+               'max_depth': [8,10,20]},
+              ]
 
+print("# Tuning hyper-parameters")
+print()
 
+clf = GridSearchCV(GradientBoostingRegressor(), parameters, cv=5, scoring='explained_variance')
+clf.fit(X_train, y_train)
+
+print("Best parameters set found on development set:")
+print()
+print(clf.best_params_)
+print()
+print("Grid scores on training set:")
+print()
+means = clf.cv_results_['mean_test_score']
+stds = clf.cv_results_['std_test_score']
+for mean, std, params in zip(means, stds, clf.cv_results_['params']):
+    print("%0.3f (+/-%0.03f) for %r"
+          % (mean, std * 2, params))
+print()
