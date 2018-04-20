@@ -35,8 +35,8 @@ def find_slice(index, target):
         i = i + 1
     return X_train, y_train
 
-Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent = data_train[:,8:9].ravel(), data_train[:,9:10].ravel(), data_train[:,10:11].ravel()
-Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent = data_test[:,8:9].ravel(), data_test[:,9:10].ravel(), data_test[:,10:11].ravel()
+Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent = data_train[-500:,8:9].ravel(), data_train[-500:,9:10].ravel(), data_train[-500:,10:11].ravel()
+Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent = data_test[-500:,8:9].ravel(), data_test[-500:,9:10].ravel(), data_test[-500:,10:11].ravel()
 
 train_y = [Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent]
 test_y = [Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent]
@@ -52,8 +52,8 @@ for train, test, scores in zip(train_y, test_y, scores_svm):
         combins = [c for c in  combinations(range(8), i)]
         for features in combins:
 
-            Xtrain = np.asarray([data_train[:, i] for i in features]).T
-            Xtest = np.asarray([data_test[:, i] for i in features]).T
+            Xtrain = np.asarray([data_train[-500:, i] for i in features]).T
+            Xtest = np.asarray([data_test[-500:, i] for i in features]).T
         
             X_scaler = StandardScaler()
             Xtrain = X_scaler.fit_transform(Xtrain)
