@@ -35,8 +35,8 @@ def find_slice(index, target):
         i = i + 1
     return X_train, y_train
 
-Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent = data_train[:,8:9].ravel(), data_train[:,9:10].ravel(), data_train[:,10:11].ravel()
-Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent = data_test[:,8:9].ravel(), data_test[:,9:10].ravel(), data_test[:,10:11].ravel()
+Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent = data_train[-5000:,8:9].ravel(), data_train[-5000:,9:10].ravel(), data_train[-5000:,10:11].ravel()
+Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent = data_test[-5000:,8:9].ravel(), data_test[-5000:,9:10].ravel(), data_test[-5000:,10:11].ravel()
 
 train_y = [Ytrain_HorseWin, Ytrain_HorseRankTop3, Ytrain_HorseRankTop50Percent]
 test_y = [Ytest_HorseWin, Ytest_HorseRankTop3, Ytest_HorseRankTop50Percent]
@@ -47,13 +47,12 @@ scores_svm_50 = {}
 scores_svm = [scores_svm_1, scores_svm_3, scores_svm_50]
 
 for train, test, scores in zip(train_y, test_y, scores_svm):
-    print(train, test, scores)
     for i in range(2, 8):
         combins = [c for c in  combinations(range(8), i)]
         for features in combins:
 
-            Xtrain = np.asarray([data_train[:, i] for i in features]).T
-            Xtest = np.asarray([data_test[:, i] for i in features]).T
+            Xtrain = np.asarray([data_train[-5000:, i] for i in features]).T
+            Xtest = np.asarray([data_test[-5000:, i] for i in features]).T
         
             X_scaler = StandardScaler()
             Xtrain = X_scaler.fit_transform(Xtrain)
@@ -69,12 +68,10 @@ for train, test, scores in zip(train_y, test_y, scores_svm):
             rbf_svc.fit(X_train, y_train)
             predict = rbf_svc.predict(Xtest)
             scores[features] = f1_score(test, predict)
-            print(f1_score(test, predict))
-            print(scores_svm_1[features])
 
 key_svm_1 = max(scores_svm_1, key=scores_svm_1.get)
 key_svm_3 = max(scores_svm_3, key=scores_svm_3.get)
 key_svm_50 = max(scores_svm_50, key=scores_svm_50.get)
 print(key_svm_1, scores_svm_1[key_svm_1])
 print(key_svm_3, scores_svm_3[key_svm_3])
-print(key_svm_50, scores_svm_1[key_svm_50])
+print(key_svm_50, scores_svm_50[key_svm_50])
