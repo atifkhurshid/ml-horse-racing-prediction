@@ -11,8 +11,8 @@ import numpy as np
 ####################################################load data########################################################
 global Xtrain, kfold
 
-df_train = pd.read_csv('/home/whl/Downloads/Horse-Racing-Prediction-master/data/training.csv')
-df_test = pd.read_csv('/home/whl/Downloads/Horse-Racing-Prediction-master/data/testing.csv')
+df_train = pd.read_csv('data/training.csv')
+df_test = pd.read_csv('data/testing.csv')
 
 data_train = df_train[['jockey_ave_rank', 'trainer_ave_rank', 'actual_weight', 'declared_horse_weight',
                        'draw', 'win_odds', 'recent_ave_rank', 'race_distance', 'horse_win',

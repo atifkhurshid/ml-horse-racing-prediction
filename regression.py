@@ -5,11 +5,8 @@ import numpy as np
 from sklearn.svm import SVR
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, explained_variance_score, r2_score
-from sklearn.model_selection import GridSearchCV
-import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
 from sklearn.externals import joblib
-from sklearn.model_selection import StratifiedShuffleSplit
 seaborn.set()
 
 def Time_to_label(df_test, y_pred):
@@ -124,7 +121,6 @@ joblib.dump(std_scalar_y, 'models/std_scalar_y.pkl')
 #Reason : Fastest to train, same performance as others
 
 #svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)        1.59 .227 .496 4.619
-
 
 print ("model_name          RMSE   Top_1   Top_3     Average_Rank")
 svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
