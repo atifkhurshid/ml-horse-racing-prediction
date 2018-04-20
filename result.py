@@ -3,7 +3,7 @@ import numpy as np
 
 global features, race_list
 
-path = '/home/whl/Downloads/Horse-Racing-Prediction-master/'
+path = '/predictions/'
 lr_file = pd.read_csv(path + 'lr_predictions.csv')
 nb_file = pd.read_csv(path + 'nb_predictions.csv')
 svm_file = pd.read_csv(path + 'svm_predictions.csv')
