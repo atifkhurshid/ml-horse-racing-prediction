@@ -47,7 +47,6 @@ scores_svm_50 = {}
 scores_svm = [scores_svm_1, scores_svm_3, scores_svm_50]
 
 for train, test, scores in zip(train_y, test_y, scores_svm):
-    print(train, test, scores)
     for i in range(2, 8):
         combins = [c for c in  combinations(range(8), i)]
         for features in combins:
@@ -69,8 +68,6 @@ for train, test, scores in zip(train_y, test_y, scores_svm):
             rbf_svc.fit(X_train, y_train)
             predict = rbf_svc.predict(Xtest)
             scores[features] = f1_score(test, predict)
-            print(f1_score(test, predict))
-            print(scores_svm_1[features])
 
 key_svm_1 = max(scores_svm_1, key=scores_svm_1.get)
 key_svm_3 = max(scores_svm_3, key=scores_svm_3.get)
