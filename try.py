@@ -1,7 +1,7 @@
 from sklearn import linear_model
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, classification_report, confusion_matrix
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import linear_model
@@ -93,3 +93,46 @@ key_rf = max(scores_rf, key=scores_rf.get)
 print(key_lr, scores_lr[key_lr])
 print(key_gnb, scores_gnb[key_gnb])
 print(key_rf, scores_rf[key_rf])
+
+
+
+df_train = pd.read_csv('data/training.csv')
+df_test = pd.read_csv('data/testing.csv')
+
+features = ['jockey_ave_rank', 'trainer_ave_rank', 'actual_weight', 'declared_horse_weight',
+                       'draw', 'win_odds', 'recent_ave_rank', 'race_distance']
+
+data_train = df_train[features].values
+data_test = df_test[features].values
+
+top1_train = df_train['horse_win'].values
+top3_train = df_train['horse_rank_top_3'].values
+top50_train = df_train['horse_rank_top_50_percent'].values
+
+top1_test = df_test['horse_win'].values
+top3_test = df_test['horse_rank_top_3'].values
+top50_test = df_test['horse_rank_top_50_percent'].values
+
+
+lr = linear_model.LogisticRegression(class_weight='balanced', random_state=42)
+lr.fit(data_train, top1_train)
+
+train_pred = lr.predict(data_train)
+test_pred = lr.predict(data_test)
+
+print (classification_report(top1_train, train_pred))
+print (confusion_matrix(top1_train, train_pred))
+print (classification_report(top1_test, test_pred))
+print (confusion_matrix(top1_test, test_pred))
+
+
+rf = RandomForestClassifier(n_estimators=100, max_depth=8, class_weight='balanced', random_state=42)
+rf.fit(data_train, top1_train)
+
+train_pred = rf.predict(data_train)
+test_pred = rf.predict(data_test)
+
+print (classification_report(top1_train, train_pred))
+print (confusion_matrix(top1_train, train_pred))
+print (classification_report(top1_test, test_pred))
+print (confusion_matrix(top1_test, test_pred))

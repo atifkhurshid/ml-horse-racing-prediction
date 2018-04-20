@@ -107,7 +107,7 @@ s_svr_RMSE = math.sqrt(mean_squared_error(y_test_std, s_svr_pred))
 s_svr_top1, s_svr_top3, s_svr_avg = Top_1_3_avg(df_test, s_svr_pred)
 print ("Scaled svr_model,  %.3f   %.3f    %.3f       %.3f" %(s_svr_RMSE, s_svr_top1, s_svr_top3, s_svr_avg))
 
-gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=200, max_depth=8)
+gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8)
 gbrt_model.fit(X_train, y_train)
 joblib.dump(gbrt_model, 'models/gbrt_model.pkl')
 gbrt_pred = gbrt_model.predict(X_test)
@@ -116,15 +116,13 @@ gbrt_top1, gbrt_top3, gbrt_avg = Top_1_3_avg(df_test, gbrt_pred)
 
 print ("gbrt_model,        %.3f   %.3f    %.3f       %.3f" %(gbrt_RMSE, gbrt_top1, gbrt_top3, gbrt_avg))
 
-s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.1, n_estimators=100, max_depth=8)
+s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8)
 s_gbrt_model.fit(X_train_std, y_train_std)
 joblib.dump(s_gbrt_model, 'models/s_gbrt_model.pkl')
 s_gbrt_pred = s_gbrt_model.predict(X_test_std)
 s_gbrt_RMSE = math.sqrt(mean_squared_error(y_test_std, s_gbrt_pred))
 s_gbrt_top1, s_gbrt_top3, s_gbrt_avg = Top_1_3_avg(df_test, s_gbrt_pred)
 print ("Scaled gbrt_model, %.3f   %.3f    %.3f       %.3f" %(s_gbrt_RMSE, s_gbrt_top1, s_gbrt_top3, s_gbrt_avg))
-
-
 
 
 
