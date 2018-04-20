@@ -12,6 +12,41 @@ from sklearn.externals import joblib
 from sklearn.model_selection import StratifiedShuffleSplit
 seaborn.set()
 
+def Time_to_label(df_test, y_pred):
+    top1 = np.zeros(y_pred.shape)
+    top3 = np.zeros(y_pred.shape)
+    top50 = np.zeros(y_pred.shape)
+    current_race_ID = df_test.loc[0].race_id
+    race_time = []
+    indices = []
+    for index, row in df_test.iterrows():
+        if current_race_ID == row.race_id:
+            race_time.append(y_pred[index])
+            indices.append(index)
+        else:
+            index_array = [x for _, x in sorted(zip(race_time, indices))]
+            top1[index_array[0]] = 1
+            top3[index_array[0]] = 1
+            top3[index_array[1]] = 1
+            top3[index_array[2]] = 1
+            size = len(index_array)
+            count = 1
+            for c in index_array:
+                if count / size <= 0.5:
+                    top50[c] = 1
+                else:
+                    break
+                count += 1
+            indices = [index]
+            race_time = [y_pred[index]]
+        current_race_ID = row.race_id
+    return top1, top3, top50
+
+def write_csv(a, b, c, race_id, horse_id, path, name):
+    columns = ['RaceID','HorseID','HorseWin','HorseRankTop3','HorseRankTop50Percent']
+    dataframe = pd.DataFrame({'RaceID':race_id, 'HorseID':horse_id, 'HorseWin':a, 'HorseRankTop3':b, 'HorseRankTop50Percent':c})
+    dataframe.to_csv("{0}/{1}_predictions.csv".format(path, name), index=False, sep=',', columns=columns)
+
 
 def Top_1_3_avg(df_test, y_pred):
     current_race_ID = df_test.loc[0].race_id
@@ -71,11 +106,12 @@ std_scalar = StandardScaler()
 std_scalar.fit(X_train)
 X_train_std = std_scalar.transform(X_train)
 X_test_std = std_scalar.transform(X_test)
+joblib.dump(std_scalar, 'models/std_scalar.pkl')
 
 std_scalar_y = StandardScaler()
 std_scalar_y.fit(np.reshape(y_train, (-1, 1)))
 y_train_std = std_scalar_y.transform(np.reshape(y_train, (-1, 1))).ravel()
-y_test_std = std_scalar_y.transform(np.reshape(y_test, (-1, 1))).ravel()
+joblib.dump(std_scalar_y, 'models/std_scalar_y.pkl')
 
 #model = SVR(kernel='linear', C = 0.1, epsilon=1)         #1.62 without normal
 #model = SVR(kernel='linear', C = 10) #1.59 with full data - normalized
@@ -91,7 +127,7 @@ y_test_std = std_scalar_y.transform(np.reshape(y_test, (-1, 1))).ravel()
 
 
 print ("model_name          RMSE   Top_1   Top_3     Average_Rank")
-svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)
+svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
 svr_model.fit(X_train, y_train)
 joblib.dump(svr_model, 'models/svr_model.pkl')
 svr_pred = svr_model.predict(X_test)
@@ -99,15 +135,16 @@ svr_RMSE = math.sqrt(mean_squared_error(y_test, svr_pred))
 svr_top1, svr_top3, svr_avg = Top_1_3_avg(df_test, svr_pred)
 print ("svr_model,         %.3f   %.3f    %.3f       %.3f" %(svr_RMSE, svr_top1, svr_top3, svr_avg))
 
-s_svr_model = SVR(kernel='rbf', C = 15000, epsilon=0.05, gamma= 0.000001)
+s_svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
 s_svr_model.fit(X_train_std, y_train_std)
 joblib.dump(s_svr_model, 'models/s_svr_model.pkl')
 s_svr_pred = s_svr_model.predict(X_test_std)
-s_svr_RMSE = math.sqrt(mean_squared_error(y_test_std, s_svr_pred))
+s_svr_pred = std_scalar_y.inverse_transform(s_svr_pred)
+s_svr_RMSE = math.sqrt(mean_squared_error(y_test, s_svr_pred))
 s_svr_top1, s_svr_top3, s_svr_avg = Top_1_3_avg(df_test, s_svr_pred)
 print ("Scaled svr_model,  %.3f   %.3f    %.3f       %.3f" %(s_svr_RMSE, s_svr_top1, s_svr_top3, s_svr_avg))
 
-gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8)
+gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8, random_state=42)
 gbrt_model.fit(X_train, y_train)
 joblib.dump(gbrt_model, 'models/gbrt_model.pkl')
 gbrt_pred = gbrt_model.predict(X_test)
@@ -116,27 +153,16 @@ gbrt_top1, gbrt_top3, gbrt_avg = Top_1_3_avg(df_test, gbrt_pred)
 
 print ("gbrt_model,        %.3f   %.3f    %.3f       %.3f" %(gbrt_RMSE, gbrt_top1, gbrt_top3, gbrt_avg))
 
-s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8)
+
+s_gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8, random_state=42)
 s_gbrt_model.fit(X_train_std, y_train_std)
 joblib.dump(s_gbrt_model, 'models/s_gbrt_model.pkl')
 s_gbrt_pred = s_gbrt_model.predict(X_test_std)
-s_gbrt_RMSE = math.sqrt(mean_squared_error(y_test_std, s_gbrt_pred))
+s_gbrt_pred = std_scalar_y.inverse_transform(s_gbrt_pred)
+s_gbrt_RMSE = math.sqrt(mean_squared_error(y_test, s_gbrt_pred))
 s_gbrt_top1, s_gbrt_top3, s_gbrt_avg = Top_1_3_avg(df_test, s_gbrt_pred)
 print ("Scaled gbrt_model, %.3f   %.3f    %.3f       %.3f" %(s_gbrt_RMSE, s_gbrt_top1, s_gbrt_top3, s_gbrt_avg))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+top1, top3, top50 = Time_to_label(df_test, s_gbrt_pred)
+write_csv(top1, top3, top50, df_test['race_id'].values, df_test['horse_id'].values, "predictions", 'gbrt')

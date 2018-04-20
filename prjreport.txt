@@ -27,3 +27,10 @@ T xj + r < 1) while the degree is large. Moreover, we
 must note that the sigmoid kernel is not valid (i.e. not the inner product of two
 4
 vectors) under some parameters (Vapnik, 1995).
+
+model_name          RMSE   Top_1   Top_3     Average_Rank
+svr_model,         1.567   0.200    0.473       4.763
+Scaled svr_model,  1.591   0.223    0.494       4.515
+gbrt_model,        1.568   0.229    0.490       4.510
+Scaled gbrt_model, 1.567   0.229    0.492       4.502
+
