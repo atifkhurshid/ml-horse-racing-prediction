@@ -64,11 +64,8 @@ def get_result(file):
         horses = horses.values.tolist()
         for horse_id in horses:
             data = dataframe[dataframe['HorseID'] == horse_id][features].values[0]
-            if data[0] == 1:
-                if data[1] == 1 or data[2] == 1:
-                    result.append(1)
-                else:
-                    result.append(0)
+            if data[0] + data[1] + data[2] == 3:
+                result.append(1)
             else:
                 result.append(0)
             i = i + 1
@@ -90,9 +87,10 @@ dataframe = pd.DataFrame(
      'rg': reult_rg})
 
 
-weights = {'lr':15, 'nb':15, 'svm':15, 'rf':25, 'gbrt':30}
+weights = {'lr':0, 'nb':0, 'svm':0, 'rf':50, 'gbrt':50} #1009
 
-returns = calculate_returns(df_test, dataframe, weights, 2, num_races)
+returns = calculate_returns(df_test, dataframe, weights, 10, num_races)
+
 print ("Balance : ", returns)
 print("Money won: ",returns - num_races)
 print ("Won: ", won, "Lost: ",lost)

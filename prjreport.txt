@@ -8,25 +8,33 @@ Number of horses:  2155
 Number of jockeys:  105
 Number of trainers:  93
 
-Number of features is small
-In general, the RBF kernel is a reasonable first choice. This kernel nonlinearly maps
-samples into a higher dimensional space so it, unlike the linear kernel, can handle the
-case when the relation between class labels and attributes is nonlinear. Furthermore,
-the linear kernel is a special case of RBF Keerthi and Lin (2003) since the linear
-kernel with a penalty parameter C˜ has the same performance as the RBF kernel with
-some parameters (C, ?). In addition, the sigmoid kernel behaves like RBF for certain
-parameters (Lin and Lin, 2003).
-The second reason is the number of hyperparameters which influences the complexity
-of model selection. The polynomial kernel has more hyperparameters than
-the RBF kernel.
-Finally, the RBF kernel has fewer numerical difficulties. One key point is 0 <
-Kij = 1 in contrast to polynomial kernels of which kernel values may go to infinity
-(?xi
-T xj + r > 1) or zero (?xi
-T xj + r < 1) while the degree is large. Moreover, we
-must note that the sigmoid kernel is not valid (i.e. not the inner product of two
-4
-vectors) under some parameters (Vapnik, 1995).
+RBF Kernel:
+This kernel can handle the case when the relation between class
+labels and attributes is nonlinear. Furthermore, since the linear kernel is a special case 
+of RBF kernel, it can also handle linear relationship. Moreover, RBF and sigmoid can have the
+same results for certain parameters and sigmoid can even be invalid for certain parameters.
+It also has hyperparameters than polynomial kernel which influence the complexity
+of model selection. Finally, the number of features is small and RBF performs well for small
+number of features.
+Epsilon is the width of SVM's soft boundary whereas C is the penalty for violating this 
+soft boundary. Hence, a larger C and smaller epsilon result in a complex model which may overfit
+whereas smaller parameters mean that the model is less complex. We've selected epsilon = 0.1 and
+C = 5000 because these parameters result in the highest top1 accuracy and lowest RMSE.
+ 
+
+
+
+
+
+SVR: svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
+     (svr_model, 1.567, 0.200, 0.473, 4.763)
+GBRT: gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8, random_state=42)
+     (gbrt_model, 1.568, 0.229, 0.490, 4.510)
+
+SVR: Prev = 1.567	Norm = 1.591
+	RMSE has increased but top1 accuracy has also increased
+GBRT: Prev = 1.568	Norm = 1.567
+	RMSE has decreased slightly but top1 result is unaffected
 
 model_name          RMSE   Top_1   Top_3     Average_Rank
 svr_model,         1.567   0.200    0.473       4.763
