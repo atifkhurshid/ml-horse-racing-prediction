@@ -1,0 +1,5 @@
+lr: 0.15
+nb: 0.26
+svm: 0.15
+rf: 0.22
+(use precision score instead of f1_score as weights)
