@@ -86,8 +86,7 @@ dataframe = pd.DataFrame(
     {'RaceID': race_id, 'HorseID': horse_id, 'lr': reult_lr, 'nb': reult_nb, 'svm': reult_svm, 'rf': reult_rf,
      'rg': reult_rg})
 
-
-weights = {'lr':0, 'nb':0, 'svm':0, 'rf':50, 'gbrt':50} #1009
+weights = {'lr':15, 'nb':26, 'svm':15, 'rf':22, 'gbrt':22}
 
 returns = calculate_returns(df_test, dataframe, weights, 10, num_races)
 

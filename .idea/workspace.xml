@@ -4,12 +4,7 @@
     <list default="true" id="de68801a-eea8-4fe4-a56e-b5cbdd078516" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/betting.py" afterPath="$PROJECT_DIR$/betting.py" />
-      <change beforePath="$PROJECT_DIR$/models/gbrt_model.pkl" afterPath="$PROJECT_DIR$/models/gbrt_model.pkl" />
-      <change beforePath="$PROJECT_DIR$/models/s_gbrt_model.pkl" afterPath="$PROJECT_DIR$/models/s_gbrt_model.pkl" />
       <change beforePath="$PROJECT_DIR$/models/s_svr_model.pkl" afterPath="$PROJECT_DIR$/models/s_svr_model.pkl" />
-      <change beforePath="$PROJECT_DIR$/models/svr_model.pkl" afterPath="$PROJECT_DIR$/models/svr_model.pkl" />
-      <change beforePath="$PROJECT_DIR$/predictions/gbrt_predictions.csv" afterPath="$PROJECT_DIR$/predictions/gbrt_predictions.csv" />
-      <change beforePath="$PROJECT_DIR$/prjreport.txt" afterPath="$PROJECT_DIR$/prjreport.txt" />
       <change beforePath="$PROJECT_DIR$/regression.py" afterPath="$PROJECT_DIR$/regression.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -58,8 +53,8 @@
       <file leaf-file-name="regression.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/regression.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="134" column="61" lean-forward="false" selection-start-line="134" selection-start-column="61" selection-end-line="134" selection-end-column="61" />
+            <state relative-caret-position="135">
+              <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -71,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/betting.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+              <caret line="92" column="29" lean-forward="true" selection-start-line="92" selection-start-column="29" selection-end-line="92" selection-end-column="29" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -157,8 +152,8 @@
         <option value="$PROJECT_DIR$/write.py" />
         <option value="$PROJECT_DIR$/result.py" />
         <option value="$PROJECT_DIR$/svm.py" />
-        <option value="$PROJECT_DIR$/betting.py" />
         <option value="$PROJECT_DIR$/regression.py" />
+        <option value="$PROJECT_DIR$/betting.py" />
       </list>
     </option>
   </component>
@@ -213,7 +208,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.regression">
+  <component name="RunManager" selected="Python.betting">
     <configuration name="betting" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -275,8 +270,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.regression" />
-        <item index="1" class="java.lang.String" itemvalue="Python.betting" />
+        <item index="0" class="java.lang.String" itemvalue="Python.betting" />
+        <item index="1" class="java.lang.String" itemvalue="Python.regression" />
         <item index="2" class="java.lang.String" itemvalue="Python.preprocess" />
       </list>
     </recent_temporary>
@@ -744,8 +739,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/regression.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="134" column="61" lean-forward="false" selection-start-line="134" selection-start-column="61" selection-end-line="134" selection-end-column="61" />
+        <state relative-caret-position="135">
+          <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -755,7 +750,7 @@
     <entry file="file://$PROJECT_DIR$/betting.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+          <caret line="92" column="29" lean-forward="true" selection-start-line="92" selection-start-column="29" selection-end-line="92" selection-end-column="29" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>

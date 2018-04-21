@@ -122,7 +122,7 @@ joblib.dump(std_scalar_y, 'models/std_scalar_y.pkl')
 
 #svr_model = SVR(kernel='rbf', C=5000, epsilon=0.1, gamma=0.0000001)        1.59 .227 .496 4.619
 
-'''
+
 print ("model_name          RMSE   Top_1   Top_3     Average_Rank")
 svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.01, gamma= 0.000001)
 svr_model.fit(X_train, y_train)
@@ -131,16 +131,16 @@ svr_pred = svr_model.predict(X_test)
 svr_RMSE = math.sqrt(mean_squared_error(y_test, svr_pred))
 svr_top1, svr_top3, svr_avg = Top_1_3_avg(df_test, svr_pred)
 print ("svr_model,         %.3f   %.3f    %.3f       %.3f" %(svr_RMSE, svr_top1, svr_top3, svr_avg))
-'''
-s_svr_model = SVR(kernel='rbf', C = 1, epsilon=0.1, gamma= 0.1)
-s_svr_model.fit(X_train_std[-1000:], y_train_std[-1000:])
+
+s_svr_model = SVR(kernel='rbf', C = 1000, epsilon=0.01, gamma= 0.0001)
+s_svr_model.fit(X_train_std, y_train_std)
 joblib.dump(s_svr_model, 'models/s_svr_model.pkl')
 s_svr_pred = s_svr_model.predict(X_test_std)
 s_svr_pred = std_scalar_y.inverse_transform(s_svr_pred)
 s_svr_RMSE = math.sqrt(mean_squared_error(y_test, s_svr_pred))
 s_svr_top1, s_svr_top3, s_svr_avg = Top_1_3_avg(df_test, s_svr_pred)
 print ("Scaled svr_model,  %.3f   %.3f    %.3f       %.3f" %(s_svr_RMSE, s_svr_top1, s_svr_top3, s_svr_avg))
-'''
+
 gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=120, max_depth=5, random_state=42)
 gbrt_model.fit(X_train, y_train)
 joblib.dump(gbrt_model, 'models/gbrt_model.pkl')
@@ -163,4 +163,3 @@ print ("Scaled gbrt_model, %.3f   %.3f    %.3f       %.3f" %(s_gbrt_RMSE, s_gbrt
 
 top1, top3, top50 = Time_to_label(df_test, s_gbrt_pred)
 write_csv(top1, top3, top50, df_test['race_id'].values, df_test['horse_id'].values, "predictions", 'gbrt')
-'''
