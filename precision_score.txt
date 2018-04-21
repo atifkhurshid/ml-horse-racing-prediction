@@ -1,0 +1,7 @@
+the precision score for each of the classifiers are as follows:
+
+lr: 0.15
+nb: 0.26
+svm: 0.15
+rf: 0.22
+
