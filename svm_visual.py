@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
-from mypath import path
 
 
 def make_meshgrid(x, y, h=.02):
@@ -43,12 +42,32 @@ def plot_contours(ax, clf, xx, yy, **params):
     out = ax.contourf(xx, yy, Z, **params)
     return out
 
-df = pd.read_csv(path + '/data/training.csv')
+df = pd.read_csv('data/training.csv')
 data_train = df[['jockey_ave_rank', 'recent_ave_rank', 'horse_rank_top_50_percent']].values
 Xtrain, Ytrain_HorseRankTop50Percent = data_train[:,0:2], data_train[:,2:3].ravel()
+print ("Start training")
 
 svm_model = svm.SVC(class_weight='balanced', kernel='linear', C = 15000)
 svm_model.fit(Xtrain, Ytrain_HorseRankTop50Percent)
+print("Plotting")
+y = svm_model.predict(Xtrain)
+
+fig, ax = plt.subplots()
+X0, X1 = Xtrain[:, 0], Xtrain[:, 1]
+xx, yy = make_meshgrid(X0, X1)
+
+plot_contours(ax, svm_model, xx, yy, cmap=plt.cm.coolwarm, alpha=0.8)
+ax.scatter(X0, X1, c=y, cmap=plt.cm.coolwarm, s=20, edgecolors='k')
+ax.set_xlim(xx.min(), xx.max())
+ax.set_ylim(yy.min(), yy.max())
+ax.set_xlabel('jockey_ave_rank')
+ax.set_ylabel('recent_ave_rank')
+ax.set_xticks(())
+ax.set_yticks(())
+ax.set_title('SVC with linear kernel')
+
+plt.show()
+
 
 fig, ax = plt.subplots()
 X0, X1 = Xtrain[:, 0], Xtrain[:, 1]

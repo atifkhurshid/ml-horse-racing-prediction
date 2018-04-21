@@ -4,21 +4,21 @@ import seaborn
 seaborn.set()
 won = 0
 lost = 0
-def bet(df_test, index):
+def bet(df_test, index, bet_amount):
     global won, lost
     if df_test.loc[index].finishing_position == 1:
         won+= 1
-        return float(df_test.loc[index].win_odds)
+        return bet_amount * (df_test.loc[index].win_odds)
 
     else:
         lost+=1
-        return -1
+        return -bet_amount
 
-def calculate_returns(df_test, df_predictions, weight_dict, threshold, money):
+def calculate_returns(df_test, df_predictions, weight_dict, threshold, bet_amount):
     current_race_ID = df_predictions.loc[0].RaceID
     indices = []
     score = []
-    money = money
+    money = 0
     for index, row in df_predictions.iterrows():
         if current_race_ID == row.RaceID:
             score.append((weight_dict['lr']*int(row.lr) + weight_dict['nb']*int(row.nb)
@@ -29,7 +29,9 @@ def calculate_returns(df_test, df_predictions, weight_dict, threshold, money):
             index_array = [x for _, x in sorted(zip(score, indices), reverse=True)]
             max_score = max(score)
             if max_score > threshold:
-                money += bet(df_test, index_array[0])
+                money += bet(df_test, index_array[0], bet_amount)
+            else:
+                money += bet_amount  # Keep the money if no bet
 
             score = [(weight_dict['lr']*int(row.lr) + weight_dict['nb']*int(row.nb)
                          + weight_dict['svm']*int(row.svm) + weight_dict['rf']*int(row.rf)
@@ -88,9 +90,9 @@ dataframe = pd.DataFrame(
 
 weights = {'lr':15, 'nb':26, 'svm':15, 'rf':22, 'gbrt':22}
 
-returns = calculate_returns(df_test, dataframe, weights, 10, num_races)
+returns = calculate_returns(df_test, dataframe, weights, 10, 1)
 
 print ("Balance : ", returns)
-print("Money won: ",returns - num_races)
+print("Money won: ",returns)
 print ("Won: ", won, "Lost: ",lost)
 print("Win loss ratio: ", won/lost)

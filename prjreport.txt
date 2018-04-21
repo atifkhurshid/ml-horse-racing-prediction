@@ -1,6 +1,6 @@
 CSCI 3320 Fundamentals of Machine Learning
 Course Project
-Steve  - 11550, Atif Khurshid 1155085457
+Steve  - 1155112154, Atif Khurshid 1155085457
 2. The Dataset and pre-processing
 2.2 Data pre-processing
 2.2.3 Indices and features for horses, jockeys and trainers
@@ -21,6 +21,15 @@ soft boundary. Hence, a larger C and smaller epsilon result in a complex model w
 whereas smaller parameters mean that the model is less complex. We've selected epsilon = 0.1 and
 C = 5000 because these parameters result in the highest top1 accuracy and lowest RMSE.
  
+GBRT:
+Selected ls (squared distance) because it is similar to lad (absolute difference) and huber (ls + lad)
+ and has no extra parameters unlike quantile. Also ls has the best RMSE result among all functions.
+learning_rate is a parameter of gradient descent and it determines the effect of new trees on the
+result of regression. n_estimaters is the number of decision trees which are combined to form a final 
+regression model. It is directly proportional to the complexity of the model. max_depth is the maximum depth
+of each decision tree and a small max_depth prevents overfitting.   
+After a grid search, we assigned the values of learning_rate=0.05 , n_estimaters=120 , max_depth=5 
+because these parameters result in the model with the least RMSE.
 
 
 
@@ -29,16 +38,67 @@ C = 5000 because these parameters result in the highest top1 accuracy and lowest
 SVR: svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
      (svr_model, 1.567, 0.200, 0.473, 4.763)
 GBRT: gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8, random_state=42)
-     (gbrt_model, 1.568, 0.229, 0.490, 4.510)
+     (gbrt_model, 1.550, 0.229, 0.517, 4.390)
 
-SVR: Prev = 1.567	Norm = 1.591
-	RMSE has increased but top1 accuracy has also increased
-GBRT: Prev = 1.568	Norm = 1.567
-	RMSE has decreased slightly but top1 result is unaffected
+SVR: Prev = 1.567	Norm = 1.564
+	RMSE has decreased slightly but more importantly, the scaled_svr model is far less complex than
+	the unscaled mode. Hence, normalization had a positive impact on SVR because it is sensitive to
+        differences in the ranges of values of different features.
+
+GBRT: Prev = 1.550	Norm = 1.549
+	RMSE is almost unchanged. Hence, normalization had no effect on the result of decision trees
+	because they are insensitive to linear transformations.
+
+
+Betting:
 
 model_name          RMSE   Top_1   Top_3     Average_Rank
 svr_model,         1.567   0.200    0.473       4.763
-Scaled svr_model,  1.591   0.223    0.494       4.515
-gbrt_model,        1.568   0.229    0.490       4.510
-Scaled gbrt_model, 1.567   0.229    0.492       4.502
+Scaled svr_model,  1.564   0.200    0.446       4.942
+gbrt_model,        1.550   0.229    0.517       4.390
+Scaled gbrt_model, 1.549   0.229    0.517       4.390
+
+
+Deciding unique horse:
+	As the results above show, none of the algorithms is accurate enough in its prediction
+of the winning horse. Therefore, we consider a combination of the results of the 4 classification
+models and the gbrt regression model to predict the winning horse.
+	We convert the predicted top1, top3 and top50percent result of each classification model
+into a nx1 vector, V, where v is 1 only if the predicted top1, top3 and top50percent labels are all 1
+		V : vEV,t1Etop1, t3Etop3, t50Etop50percent, v = min{t1, t3, t50} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
