@@ -37,7 +37,7 @@ because these parameters result in the model with the least RMSE.
 
 SVR: svr_model = SVR(kernel='rbf', C = 5000, epsilon=0.1, gamma= 0.000001)
      (svr_model, 1.567, 0.200, 0.473, 4.763)
-GBRT: gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=100, max_depth=8, random_state=42)
+GBRT: gbrt_model = GradientBoostingRegressor(loss='ls', learning_rate=0.05, n_estimators=120, max_depth=5, random_state=42)
      (gbrt_model, 1.550, 0.229, 0.517, 4.390)
 
 SVR: Prev = 1.567	Norm = 1.564

@@ -159,7 +159,3 @@ s_gbrt_pred = std_scalar_y.inverse_transform(s_gbrt_pred)
 s_gbrt_RMSE = math.sqrt(mean_squared_error(y_test, s_gbrt_pred))
 s_gbrt_top1, s_gbrt_top3, s_gbrt_avg = Top_1_3_avg(df_test, s_gbrt_pred)
 print ("Scaled gbrt_model, %.3f   %.3f    %.3f       %.3f" %(s_gbrt_RMSE, s_gbrt_top1, s_gbrt_top3, s_gbrt_avg))
-
-
-top1, top3, top50 = Time_to_label(df_test, s_gbrt_pred)
-write_csv(top1, top3, top50, df_test['race_id'].values, df_test['horse_id'].values, "predictions", 'gbrt')

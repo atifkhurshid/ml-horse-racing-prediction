@@ -1,11 +1,8 @@
 import seaborn
-from mypath import path
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
-from mypath import path
-
 
 seaborn.set()
 won = 0
