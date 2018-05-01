@@ -5,11 +5,16 @@ from sklearn.externals import joblib
 
 seaborn.set()
 
+won = 0
+lost = 0
 
 def bet(df_test, index, bet_amount):
+    global won, lost
     if df_test.loc[index].finishing_position == 1:
+        won += 1
         return bet_amount * (df_test.loc[index].win_odds)
     else:
+        lost += 1
         return -bet_amount
 
 
@@ -150,8 +155,14 @@ dataframe = pd.DataFrame( {'RaceID': race_id, 'HorseID': horse_id, 'lr': reult_l
 
 weights = {'lr':15, 'nb':26, 'svm':15, 'rf':22, 'svr':0, 's_svr':0, 'gbrt':0, 'gbrt_s':22}
 
+print ("Number of races: ", num_races)
+print ("Bet per race: $1")
+
 returns = calculate_returns(df_test, dataframe, weights, threshold=0, bet_amount=1, strategy = False)
 print("Money won by default strategy: ",returns)
-
+print("Won: %d, Lost: %d, WL-ratio: %.2f" %(won, lost, float(won)/lost))
+won = 0
+lost = 0
 returns = calculate_returns(df_test, dataframe, weights, threshold=35, bet_amount=1, strategy = True)
 print("Money won by our strategy: ",returns)
+print("Won: %d, Lost: %d, WL-ratio: %.2f" %(won, lost, float(won)/lost))
